@@ -31,6 +31,10 @@ class Settings:
     confirm_policy: str = "adaptive"
     max_audio_bytes: int = 2_000_000
     max_turns_per_session: int = 200
+    demo_code: str = ""
+    max_live_calls_per_day: int = 400
+    rate_limit_per_ip: int = 30
+    rate_limit_window_s: int = 600
 
     @staticmethod
     def load() -> "Settings":
@@ -38,4 +42,8 @@ class Settings:
             provider=os.environ.get("PROVIDER", "mock").strip().lower(),
             debug=os.environ.get("DEBUG", "0").strip() == "1",
             confirm_policy=os.environ.get("CONFIRM_POLICY", "adaptive").strip().lower(),
+            demo_code=os.environ.get("DEMO_CODE", "").strip(),
+            max_live_calls_per_day=int(os.environ.get("MAX_LIVE_CALLS_PER_DAY", "400").strip()),
+            rate_limit_per_ip=int(os.environ.get("RATE_LIMIT_PER_IP", "30").strip()),
+            rate_limit_window_s=int(os.environ.get("RATE_LIMIT_WINDOW_S", "600").strip()),
         )

@@ -1,0 +1,12 @@
+id: demo_company
+name: Demo Agri Co (fake company)
+company_language: en
+public_key: pk_demo_change_me
+allowed_origins:
+  - "http://localhost:8000"
+  - "http://127.0.0.1:8000"
+  - "https://*.onrender.com"
+admin_token_env: DEMO_ADMIN_TOKEN
+forms:
+  - farmer_scheme
+  - pension_scheme

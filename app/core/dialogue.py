@@ -43,6 +43,8 @@ class Session:
     id: str
     form: FormDef
     telephony: bool = False
+    tenant_id: str | None = None
+    demo_code_ok: bool = False
     idx: int = 0
     fields: dict[str, FieldState] = field(default_factory=dict)
     state: str = "ask"
@@ -66,8 +68,10 @@ class SessionStore:
         self._lock = threading.Lock()
         self.ttl_s = ttl_s
 
-    def create(self, form: FormDef, telephony: bool = False) -> Session:
+    def create(self, form: FormDef, telephony: bool = False,
+               tenant_id: str | None = None, demo_code_ok: bool = False) -> Session:
         s = Session(id=uuid.uuid4().hex, form=form, telephony=telephony,
+                    tenant_id=tenant_id, demo_code_ok=demo_code_ok,
                     fields={f.key: FieldState() for f in form.fields})
         with self._lock:
             self._purge_locked()

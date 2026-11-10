@@ -22,14 +22,19 @@ SIM_ERROR_RATE = {"clean": 0.03, "noise20": 0.06, "noise10": 0.15, "noise5": 0.3
 class MockProvider(Provider):
     name = "mock"
 
+    def __init__(self) -> None:
+        self.calls = {"stt": 0, "tts": 0}
+
     def transcribe(self, wav_bytes: bytes, lang: str = "te", hint: str | None = None) -> STTResult:
         """Returns the hint text (the UI sends what the developer typed). Real audio is ignored."""
+        self.calls["stt"] += 1
         if hint:
             return STTResult(text=hint, confidence=None, language=lang)
         return STTResult(text="", confidence=None, language=lang)
 
     def synthesize(self, text: str, lang: str = "te", voice: str | None = None) -> TTSResult:
         """A short soft beep whose length depends on the text. Not speech."""
+        self.calls["tts"] += 1
         sr = 16000
         dur = min(1.2, 0.25 + 0.01 * len(text))
         t = np.arange(int(sr * dur)) / sr

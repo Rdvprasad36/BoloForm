@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo Agri Co — Farmer Application Form</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      padding: 24px 16px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .header {
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+    .badge {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    p.sub {
+      color: #64748b;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    input[type="text"], input[type="number"], input[type="tel"], select {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #0f172a;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    }
+    .row {
+      display: flex;
+      gap: 16px;
+    }
+    .row > .form-group {
+      flex: 1;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .checkbox-label input {
+      width: 18px;
+      height: 18px;
+    }
+    .submit-btn {
+      width: 100%;
+      background: #16a34a;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.15s;
+    }
+    .submit-btn:hover {
+      background: #15803d;
+    }
+    .result-card {
+      margin-top: 24px;
+      padding: 20px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      display: none;
+    }
+    .result-card h3 {
+      color: #166534;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .result-card pre {
+      font-size: 13px;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #dcfce7;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <span class="badge">Host Company Portal</span>
+    <h1>Demo Agri Co — Support Scheme</h1>
+    <p class="sub">Company language: English. Users may fill using Bolo Form voice widget in Telugu.</p>
+  </div>
+
+  <!-- Embed script will insert the voice button above this form -->
+  <form id="company-form">
+    <div class="row">
+      <div class="form-group">
+        <label for="farmer_name">Full Name</label>
+        <input type="text" id="farmer_name" name="farmer_name" placeholder="e.g. Ramu">
+      </div>
+      <div class="form-group">
+        <label for="farmer_age">Age</label>
+        <input type="number" id="farmer_age" name="farmer_age" placeholder="e.g. 35" min="18" max="100">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group">
+        <label for="village">Village / Town</label>
+        <input type="text" id="village" name="village" placeholder="e.g. Gollapalem">
+      </div>
+      <div class="form-group">
+        <label for="district">District</label>
+        <select id="district" name="district">
+          <option value="">-- Select District --</option>
+          <option value="srikakulam">Srikakulam</option>
+          <option value="parvathipuram_manyam">Parvathipuram Manyam</option>
+          <option value="vizianagaram">Vizianagaram</option>
+          <option value="visakhapatnam">Visakhapatnam</option>
+          <option value="alluri_sitharama_raju">Alluri Sitharama Raju</option>
+          <option value="anakapalli">Anakapalli</option>
+          <option value="kakinada">Kakinada</option>
+          <option value="east_godavari">East Godavari</option>
+          <option value="konaseema">Konaseema</option>
+          <option value="eluru">Eluru</option>
+          <option value="west_godavari">West Godavari</option>
+          <option value="ntr">NTR</option>
+          <option value="krishna">Krishna</option>
+          <option value="palnadu">Palnadu</option>
+          <option value="guntur">Guntur</option>
+          <option value="bapatla">Bapatla</option>
+          <option value="prakasam">Prakasam</option>
+          <option value="nellore">Nellore</option>
+          <option value="kurnool">Kurnool</option>
+          <option value="nandyal">Nandyal</option>
+          <option value="anantapur">Anantapur</option>
+          <option value="sri_sathya_sai">Sri Sathya Sai</option>
+          <option value="kadapa">YSR Kadapa</option>
+          <option value="annamayya">Annamayya</option>
+          <option value="chittoor">Chittoor</option>
+          <option value="tirupati">Tirupati</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="e.g. 9876543210">
+      </div>
+      <div class="form-group">
+        <label for="land_acres">Land Area (Acres)</label>
+        <input type="text" id="land_acres" name="land_acres" placeholder="e.g. 2.5">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="crop">Primary Crop</label>
+      <select id="crop" name="crop">
+        <option value="">-- Select Crop --</option>
+        <option value="paddy">Paddy / Rice</option>
+        <option value="chilli">Chilli</option>
+        <option value="cotton">Cotton</option>
+        <option value="groundnut">Groundnut</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox" id="has_bank" name="has_bank">
+        <span>Active Bank Account Linked</span>
+      </label>
+    </div>
+
+    <button type="submit" class="submit-btn">Submit to Demo Agri Co</button>
+  </form>
+
+  <div id="result-box" class="result-card">
+    <h3>Submitted to Demo Agri Co Server:</h3>
+    <pre id="result-json"></pre>
+  </div>
+</div>
+
+<!-- Bolo Form Embed Script -->
+<script
+  src="/embed.js"
+  data-key="pk_demo_change_me"
+  data-form="farmer_scheme"
+  data-map='{"name":"[name=farmer_name]","age":"[name=farmer_age]","village":"[name=village]","district":"[name=district]","phone":"[name=phone]","land_acres":"[name=land_acres]","crop":"[name=crop]","has_bank":"[name=has_bank]"}'
+></script>
+
+<script>
+  document.getElementById("company-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const data = {
+      farmer_name: document.getElementById("farmer_name").value,
+      farmer_age: document.getElementById("farmer_age").value,
+      village: document.getElementById("village").value,
+      district: document.getElementById("district").value,
+      phone: document.getElementById("phone").value,
+      land_acres: document.getElementById("land_acres").value,
+      crop: document.getElementById("crop").value,
+      has_bank: document.getElementById("has_bank").checked
+    };
+    document.getElementById("result-json").textContent = JSON.stringify(data, null, 2);
+    document.getElementById("result-box").style.display = "block";
+  });
+</script>
+
+</body>
+</html>

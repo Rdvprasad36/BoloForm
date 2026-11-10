@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bolo Form — Tenant Submissions Inbox</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      padding: 24px 16px;
+    }
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    h1 { font-size: 22px; font-weight: 700; color: #0f172a; }
+    .auth-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .auth-box input {
+      flex: 1;
+      max-width: 380px;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+    }
+    button, .btn {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    button.secondary, .btn.secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #475569;
+    }
+    tr:nth-child(even) { background: #fdfdfd; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #e2e8f0;
+    }
+    .actions { display: flex; gap: 10px; }
+    .error { color: #dc2626; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top-bar">
+    <div>
+      <h1>Submissions Inbox</h1>
+      <p style="color:#64748b;font-size:13px;margin-top:4px">Tenant: <strong id="tenant-name">demo_company</strong></p>
+    </div>
+    <div class="actions">
+      <a id="btn-csv" class="btn secondary" href="#" target="_blank">📥 Export CSV</a>
+      <a id="btn-json" class="btn secondary" href="#" target="_blank">Export JSON</a>
+    </div>
+  </div>
+
+  <div class="auth-box">
+    <input type="password" id="token-input" placeholder="Enter Tenant Admin Token (e.g. demo_token_pk_demo_change_me)">
+    <button id="load-btn">Load Submissions</button>
+  </div>
+  <p id="error-msg" class="error" hidden></p>
+
+  <div style="overflow-x:auto">
+    <table id="subs-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Form</th>
+          <th>Time (UTC)</th>
+          <th>User Lang</th>
+          <th>Field Values</th>
+        </tr>
+      </thead>
+      <tbody id="subs-body">
+        <tr><td colspan="5" style="text-align:center;color:#64748b">No submissions loaded yet. Click 'Load Submissions'.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const tenantId = urlParams.get("tenant") || "demo_company";
+  document.getElementById("tenant-name").textContent = tenantId;
+
+  // Auto-fill default token if present
+  const defaultToken = "demo_token_pk_demo_change_me";
+  if (!document.getElementById("token-input").value) {
+    document.getElementById("token-input").value = defaultToken;
+  }
+
+  async function loadSubmissions() {
+    const token = document.getElementById("token-input").value.trim();
+    const errEl = document.getElementById("error-msg");
+    errEl.hidden = true;
+
+    // Update export links
+    document.getElementById("btn-csv").href = `/api/inbox.csv?tenant=${encodeURIComponent(tenantId)}&token=${encodeURIComponent(token)}`;
+    document.getElementById("btn-json").href = `/api/inbox.json?tenant=${encodeURIComponent(tenantId)}&token=${encodeURIComponent(token)}`;
+
+    try {
+      const res = await fetch(`/api/inbox.json?tenant=${encodeURIComponent(tenantId)}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.detail || `Failed with status ${res.status}`);
+      }
+      const data = await res.json();
+      renderTable(data);
+    } catch (e) {
+      errEl.textContent = e.message;
+      errEl.hidden = false;
+    }
+  }
+
+  function renderTable(items) {
+    const tbody = document.getElementById("subs-body");
+    tbody.replaceChildren();
+    if (!items || items.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#64748b">No submissions found for this tenant.</td></tr>';
+      return;
+    }
+
+    for (const s of items) {
+      const tr = document.createElement("tr");
+
+      const tdId = document.createElement("td");
+      tdId.textContent = s.id;
+
+      const tdForm = document.createElement("td");
+      tdForm.textContent = s.form_id;
+
+      const tdTime = document.createElement("td");
+      tdTime.textContent = new Date(s.created_at * 1000).toISOString().replace("T", " ").slice(0, 19);
+
+      const tdLang = document.createElement("td");
+      tdLang.innerHTML = `<span class="badge">${s.user_language} → ${s.company_language}</span>`;
+
+      const tdVals = document.createElement("td");
+      const summary = [];
+      for (const [k, v] of Object.entries(s.values || {})) {
+        const disp = v.display_company || v.value;
+        summary.push(`<strong>${k}</strong>: ${disp}`);
+      }
+      tdVals.innerHTML = summary.join(" | ");
+
+      tr.append(tdId, tdForm, tdTime, tdLang, tdVals);
+      tbody.append(tr);
+    }
+  }
+
+  document.getElementById("load-btn").addEventListener("click", loadSubmissions);
+  // Initial load
+  loadSubmissions();
+</script>
+
+</body>
+</html>

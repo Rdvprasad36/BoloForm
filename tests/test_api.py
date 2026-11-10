@@ -341,3 +341,77 @@ def test_start_session_telephony_sim():
     assert r.status_code == 200
     j = r.json()
     assert j["telephony"] is True
+
+
+# ------------------------------------------------------------------ widget, embed, demo & inbox pages
+def test_widget_page_served():
+    r = client.get("/widget")
+    assert r.status_code == 200
+    assert "frame-ancestors" in r.headers.get("content-security-policy", "")
+    assert b"Bolo Form Widget" in r.content
+
+
+def test_embed_script_served():
+    r = client.get("/embed.js")
+    assert r.status_code == 200
+    assert "javascript" in r.headers.get("content-type", "")
+    assert b"bolo-launch-btn" in r.content
+
+
+def test_demo_company_page_served():
+    r = client.get("/demo/company.html")
+    assert r.status_code == 200
+    assert b"Demo Agri Co" in r.content
+    assert b"embed.js" in r.content
+
+
+def test_inbox_page_served():
+    r = client.get("/inbox")
+    assert r.status_code == 200
+    assert b"Submissions Inbox" in r.content
+
+
+# ------------------------------------------------------------------ submit & inbox APIs
+def test_submit_and_inbox_flow():
+    sid, _ = _start("farmer_scheme")
+    _turn(sid, text="రాము", typed="1")
+    _turn(sid, text="35", typed="1")
+
+    # Submit
+    r_sub = client.post(f"/api/sessions/{sid}/submit?key=pk_demo_change_me")
+    assert r_sub.status_code == 200
+    sub_data = r_sub.json()
+    assert sub_data["ok"] is True
+    sub_id = sub_data["submission_id"]
+    delete_token = sub_data["delete_token"]
+    assert sub_id and delete_token
+
+    # Inbox JSON without token should fail 401
+    r_unauth = client.get("/api/inbox.json?tenant=demo_company")
+    assert r_unauth.status_code == 401
+
+    # Inbox JSON with valid token
+    token = "demo_token_pk_demo_change_me"
+    r_inbox = client.get(f"/api/inbox.json?tenant=demo_company&token={token}")
+    assert r_inbox.status_code == 200
+    items = r_inbox.json()
+    assert len(items) >= 1
+    found = next((s for s in items if s["id"] == sub_id), None)
+    assert found is not None
+    assert found["values"]["name"]["value"] == "రాము"
+
+    # Inbox CSV with valid token
+    r_csv = client.get(f"/api/inbox.csv?tenant=demo_company&token={token}")
+    assert r_csv.status_code == 200
+    assert "text/csv" in r_csv.headers["content-type"]
+    assert sub_id in r_csv.text
+
+    # Delete submission
+    r_del = client.delete(f"/api/submissions/{sub_id}?token={delete_token}")
+    assert r_del.status_code == 200
+    assert r_del.json()["deleted"] is True
+
+    # After deletion, should not appear in inbox
+    r_inbox2 = client.get(f"/api/inbox.json?tenant=demo_company&token={token}")
+    assert not any(s["id"] == sub_id for s in r_inbox2.json())
+

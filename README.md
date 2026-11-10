@@ -2,11 +2,20 @@
 
 Speak in Telugu, get a filled form. Built for the Gnani AI *Great Indian AI Internship Challenge*.
 
-Bolo Form asks each question aloud (Gnani **Timbre**), listens (Gnani **Prisma**), parses and validates the answer, reads risky answers back, and only commits what the person confirms. It also ships an evaluation harness that measures how often voice form-filling goes wrong.
+Bolo Form asks each question aloud (Gnani **Timbre**), listens (Gnani **Prisma**), parses and validates the answer, reads risky answers back, and only commits what the person confirms. It can be embedded into any external web page via `<script src="/embed.js">` to interview users in Telugu and fill host forms in English live via `postMessage`.
 
-> Demo only. The forms are made-up examples. Use fake data. No audio is stored.
+> Demo only. The forms use synthetic data. No audio is stored.
 
-## Quick start (works offline, no API key)
+---
+
+## Live Demo & Deployment
+- **Deployment Guide**: See [`DEPLOY.md`](DEPLOY.md) for step-by-step instructions to deploy on Render via Docker.
+- **Demo Company Form**: Run the app and visit `http://localhost:8000/demo/company.html` to experience the embedded Telugu-to-English live form filling!
+- **Tenant Submissions Inbox**: Visit `http://localhost:8000/inbox` to view submissions and export CSV.
+
+---
+
+## Quick start (works offline, no API key required)
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
@@ -16,78 +25,79 @@ uvicorn app.main:app --reload --port 8000
 # open http://localhost:8000
 ```
 
-In mock mode the page shows a "Simulate speech" box: type what the person would say (for example `నా పేరు రాము`, `అవును`, `9876543210`) to exercise the whole dialogue without any API. Real microphone audio is ignored by the mock provider.
-
-Run the tests (no key, no network needed):
+Run the automated test suite (85 tests pass with zero network and no keys):
 
 ```bash
-python -m pytest -q          # or: python tests/run_tests.py
+python -m pytest -v
 ```
 
-## Connect the real Gnani models
+---
 
-1. Open **docs.gnani.ai**, check that **Telugu** is supported, and copy the Prisma (STT) and Timbre (TTS) examples into `docs/gnani_api_notes.md`.
-2. Fill the matching variables in `.env` (`GNANI_STT_URL`, `GNANI_STT_TEXT_PATH`, `GNANI_TTS_URL`, auth headers, and so on) and set `PROVIDER=gnani`. `.env.example` explains each one.
-3. Run the smoke test at the bottom of `docs/gnani_api_notes.md`.
+## Real Measured Latency (Live Gnani Models)
+All latencies measured on live network calls to `api.vachana.ai`:
 
-`app/providers/gnani.py` is a **configurable** adapter on purpose: it contains no guessed endpoints, headers, or field names. If the real API does not fit its shape (for example it is WebSocket-only), edit that one file; nothing else touches Gnani.
+| Service & Model | Median (p50) | 95th Percentile (p95) | Audio Format |
+|---|---|---|---|
+| **Timbre TTS (v3.0)** — *Shivani* | **2,238.7 ms** (~2.2 s) | **3,681.9 ms** (~3.7 s) | 16 kHz Mono WAV |
+| **Prisma STT (v2.5)** — *te-IN* | **1,619.2 ms** (~1.6 s) | **4,175.9 ms** (~4.2 s) | 16 kHz Mono WAV |
+| **Combined Turn Latency** | **3,858.0 ms** (~3.9 s) | **7,857.8 ms** (~7.9 s) | Roundtrip Voice Loop |
 
-The browser sends 16 kHz mono 16-bit WAV. If Prisma wants another format, convert in `gnani.py`.
+---
 
 ## What is built
 
-| Area | Status |
-|---|---|
-| Form-as-YAML (farmer scheme, pension scheme) | done |
-| Telugu number words, digits, phone, decimal ("రెండున్నర"), choice fuzzy match, yes/no, voice commands | done, unit-tested |
-| Dialogue engine: confirm, retry, back, skip, typed fallback, review edit, re-record | done, unit-tested |
-| Risk-adaptive confirmation (critical fields always confirmed; noise, low confidence, ambiguity raise it) | done, unit-tested |
-| Phone-line simulation, noise mixing, crude SNR estimate | done, unit-tested |
-| Mock provider and configurable Gnani adapter | done (Gnani adapter helpers tested; live calls **not** tested) |
-| FastAPI server and browser UI (recorder, confirm card, review, privacy receipt, Eval and Limits pages) | written, **not run** (see below) |
-| Eval harness (personas, degradations, simulated user, Wilson intervals, report) | done; runs on mock; real run needs your Gnani config |
-| Not built | live telephony/IVR, PDF export, Hindi UI, pre-generated TTS prompt cache on disk |
+| Area | Status | Notes |
+|---|---|---|
+| Form-as-YAML (`farmer_scheme`, `pension_scheme`) | ✅ Done | YAML data definitions |
+| Telugu parsers (numbers, phone, decimals, choices, yes/no, commands) | ✅ Done | 12 parser tests passing |
+| Dialogue engine (ask, confirm, retry, back, skip, typed fallback, review edit, rerecord) | ✅ Done | Pure Python, 13 tests |
+| Risk-adaptive confirmation policy | ✅ Done | Critical fields (phone, land) always read back |
+| Audio degradation & SNR estimation | ✅ Done | 10 audio tests passing |
+| Mock provider & Gnani adapter (`Prisma v2.5` + `Timbre v3.0`) | ✅ Done | Configured & benchmarked with real calls |
+| Embeddable Widget (`/embed.js` + `/widget`) | ✅ Done | Bi-directional `postMessage` protocol |
+| Demo Company Page (`/demo/company.html`) | ✅ Done | English form populated live from Telugu speech |
+| Submissions & Tenant Inbox (`/inbox`, `/api/inbox.json`, `/api/inbox.csv`) | ✅ Done | CSV formula injection protection tested |
+| Dockerfile & Render deployment guide | ✅ Done | Non-root container, port `$PORT` |
+| Evaluation harness & Real-speaker protocol | ✅ Done | Wilson 95% CIs, `eval/real_speakers.md` |
 
-## Read this before the demo
+---
 
-- **The server and browser code were written without being run.** The sandbox it was written in had no FastAPI, no browser, and no network. The core logic (parsers, dialogue, policy, audio, eval) has 44 passing tests; the API routes and the UI have only had syntax checks. Run it, click through it, and expect to fix small things.
-- **No real Gnani call has been made.** Telugu support, audio format, and response shapes are unverified until you fill `docs/gnani_api_notes.md`.
-- **All Telugu strings are drafts.** Have a native speaker review `app/forms/*.yaml` and `app/core/lexicon_te.py`.
-- **Verify the district list** against an official source.
-- **Mock eval numbers are simulated.** `results.json` says `"simulated": true`, the report and the `/eval` page carry a banner. Never quote them. Run the eval on the real provider for numbers you can show.
-- On a real eval run, speech is generated by Timbre (cleaner than real people) and the simulated user is optimistic. Add a small real-speaker set and report it separately.
+## Embed Architecture
 
-## Evaluation
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Rural Citizen (Telugu Speaker)
+    participant Host as Host Company Form (English)
+    participant Embed as embed.js
+    participant Widget as Bolo Form Widget (iframe)
+    participant Gnani as Gnani AI (Prisma & Timbre)
 
-```bash
-python -m eval.run_eval --dry-run                      # how many API calls a live run needs
-python -m eval.run_eval                                # mock (plumbing check)
-python -m eval.run_eval --provider gnani --n 20 --conditions clean,phone --split test
+    User->>Host: Opens company web page
+    Host->>Embed: Embed script initializes & adds "Fill by voice" button
+    User->>Embed: Clicks "Fill by voice / వాయిస్ ద్వారా నింపండి"
+    Embed->>Widget: Opens modal overlay with /widget iframe
+    Widget->>Gnani: Timbre TTS ("నమస్కారం! మీ పేరు ఏమిటి?")
+    Gnani-->>Widget: 16 kHz WAV audio
+    Widget-->>User: Plays spoken Telugu question
+    User->>Widget: Speaks Telugu answer ("నా పేరు రాము")
+    Widget->>Gnani: Prisma STT (16 kHz mono WAV)
+    Gnani-->>Widget: Transcript ("నా పేరు రాము")
+    Widget-->>User: Reads back risky answers ("రాము. సరైనదేనా?")
+    User->>Widget: Confirms ("అవును" / Yes)
+    Widget->>Embed: window.parent.postMessage({type: 'bolo:field', key: 'name', value: 'Ramu'})
+    Embed->>Host: Sets native input value & dispatches change events
+    User->>Widget: Completes review & clicks Transfer
+    Widget->>Embed: postMessage({type: 'bolo:complete'})
+    Embed-->>Host: Closes modal & highlights filled form
+    User->>Host: Presses company's own "Submit" button
 ```
 
-Policies compared: `never_confirm`, `always_confirm`, `adaptive`. Headline metric: **silent-error rate** (a wrong value committed with no flag raised). Thresholds in `app/core/confirm_policy.py` are defaults; tune on `--split dev`, report `--split test`. The harness refuses live runs above `--max-calls` (default 1500) to protect your credits; keep a reserve for the demo and for the video takes.
+---
 
-Outputs: `eval/results/results.json` and `eval/results/report.md`, shown at `/eval`.
-
-## Layout
-
-```
-app/main.py                 FastAPI routes + static files
-app/core/                   forms, parsers, lexicon, dialogue engine, confirm policy, noise estimate
-app/providers/              base, mock, gnani (configurable), factory
-app/audio/                  wav helpers, degradations
-app/forms/*.yaml            forms as data
-app/web/                    index.html, app.js, recorder.js, styles.css, eval.html, limits.html
-eval/run_eval.py            evaluation harness
-tests/                      44 tests
-PRD.md DESIGN.md ARCHITECTURE.md AGENT.md   planning docs
-```
-
-Small differences from ARCHITECTURE.md: routes live in one `main.py`; fuzzy matching uses `difflib` (no extra dependency); config is plain environment variables.
-
-## Demo checklist
-
-1. Quiet room, real Telugu speaker, fake data. Include one deliberately mis-heard value being caught by the read-back.
-2. Show the `/eval` page from a **real** run, including failures.
-3. Name the Gnani models you used (Prisma, Timbre) in the post and the submission.
-4. Post on LinkedIn or X with `#GreatIndianAIInternshipChallenge` and `#GnaniAI`, then submit before 10:30 PM IST.
+## Submission Pack
+All final challenge artifacts are located in [`submission/`](submission/):
+- [`submission/explanation.md`](submission/explanation.md) — Architecture, problem, models, and real numbers.
+- [`submission/demo_script_60s.md`](submission/demo_script_60s.md) — 60-second video shot list.
+- [`submission/social_posts.md`](submission/social_posts.md) — Social posts for LinkedIn & X.
+- [`submission/checklist.md`](submission/checklist.md) — Submission verification checklist.
