@@ -1,0 +1,100 @@
+# DEMO FORM. Not a real government scheme. Use fake data only.
+# Telugu text is a draft: have a native speaker review it.
+id: farmer_scheme
+title_te: రైతు సహాయ పథకం (డెమో)
+title_en: Demo Farmer Support Scheme
+fields:
+  - key: name
+    type: text
+    risk: medium
+    label_te: పేరు
+    label_en: Name
+    prompt_te: మీ పేరు ఏమిటి?
+    prompt_en: What is your name?
+  - key: age
+    type: integer
+    risk: medium
+    min: 18
+    max: 100
+    label_te: వయస్సు
+    label_en: Age
+    prompt_te: మీ వయస్సు ఎంత?
+    prompt_en: How old are you?
+  - key: village
+    type: text
+    risk: medium
+    label_te: ఊరు
+    label_en: Village
+    prompt_te: మీ ఊరు పేరు ఏమిటి?
+    prompt_en: What is your village?
+  - key: district
+    type: choice
+    risk: medium
+    label_te: జిల్లా
+    label_en: District
+    prompt_te: మీ జిల్లా ఏది?
+    prompt_en: Which district?
+    # Verify this list against an official source before shipping: names change over time.
+    choices:
+      - {value: srikakulam, te: శ్రీకాకుళం, en: Srikakulam, aliases: [srikakulam]}
+      - {value: parvathipuram_manyam, te: పార్వతీపురం మన్యం, en: Parvathipuram Manyam, aliases: [parvathipuram, manyam, పార్వతీపురం]}
+      - {value: vizianagaram, te: విజయనగరం, en: Vizianagaram, aliases: [vizianagaram]}
+      - {value: visakhapatnam, te: విశాఖపట్నం, en: Visakhapatnam, aliases: [visakhapatnam, vizag, vishakhapatnam, వైజాగ్, విశాఖపట్టణం, విశాఖ]}
+      - {value: alluri_sitharama_raju, te: అల్లూరి సీతారామరాజు, en: Alluri Sitharama Raju, aliases: [alluri, అల్లూరి]}
+      - {value: anakapalli, te: అనకాపల్లి, en: Anakapalli, aliases: [anakapalli, anakapalle]}
+      - {value: kakinada, te: కాకినాడ, en: Kakinada, aliases: [kakinada]}
+      - {value: east_godavari, te: తూర్పు గోదావరి, en: East Godavari, aliases: [east godavari, తూర్పు గోదావరి]}
+      - {value: konaseema, te: కోనసీమ, en: Konaseema, aliases: [konaseema]}
+      - {value: eluru, te: ఏలూరు, en: Eluru, aliases: [eluru]}
+      - {value: west_godavari, te: పశ్చిమ గోదావరి, en: West Godavari, aliases: [west godavari, పశ్చిమ గోదావరి]}
+      - {value: ntr, te: ఎన్టీఆర్, en: NTR, aliases: [ntr, ఎన్టీఆర్, విజయవాడ]}
+      - {value: krishna, te: కృష్ణా, en: Krishna, aliases: [krishna, కృష్ణ, మచిలీపట్నం]}
+      - {value: palnadu, te: పల్నాడు, en: Palnadu, aliases: [palnadu]}
+      - {value: guntur, te: గుంటూరు, en: Guntur, aliases: [guntur]}
+      - {value: bapatla, te: బాపట్ల, en: Bapatla, aliases: [bapatla]}
+      - {value: prakasam, te: ప్రకాశం, en: Prakasam, aliases: [prakasam, ఒంగోలు]}
+      - {value: nellore, te: నెల్లూరు, en: Nellore, aliases: [nellore]}
+      - {value: kurnool, te: కర్నూలు, en: Kurnool, aliases: [kurnool]}
+      - {value: nandyal, te: నంద్యాల, en: Nandyal, aliases: [nandyal]}
+      - {value: anantapur, te: అనంతపురం, en: Anantapur, aliases: [anantapur, anantapuram]}
+      - {value: sri_sathya_sai, te: శ్రీ సత్యసాయి, en: Sri Sathya Sai, aliases: [sathya sai, సత్యసాయి, పుట్టపర్తి]}
+      - {value: kadapa, te: కడప, en: YSR Kadapa, aliases: [kadapa, cuddapah, వైఎస్ఆర్]}
+      - {value: annamayya, te: అన్నమయ్య, en: Annamayya, aliases: [annamayya]}
+      - {value: chittoor, te: చిత్తూరు, en: Chittoor, aliases: [chittoor]}
+      - {value: tirupati, te: తిరుపతి, en: Tirupati, aliases: [tirupati]}
+  - key: phone
+    type: phone
+    risk: critical
+    label_te: ఫోన్ నంబర్
+    label_en: Phone number
+    prompt_te: మీ ఫోన్ నంబర్ చెప్పండి.
+    prompt_en: Tell me your phone number.
+  - key: land_acres
+    type: decimal
+    risk: critical
+    min: 0.1
+    max: 500
+    label_te: భూమి (ఎకరాలు)
+    label_en: Land (acres)
+    prompt_te: మీకు ఎన్ని ఎకరాల భూమి ఉంది?
+    prompt_en: How many acres of land do you have?
+  - key: crop
+    type: choice
+    risk: low
+    label_te: ప్రధాన పంట
+    label_en: Main crop
+    prompt_te: మీరు ప్రధానంగా ఏ పంట వేస్తారు?
+    prompt_en: Which crop do you mainly grow?
+    choices:
+      - {value: paddy, te: వరి, en: Paddy, aliases: [paddy, rice, వరి, వడ్లు]}
+      - {value: chilli, te: మిరప, en: Chilli, aliases: [chilli, chili, మిరప, మిర్చి, మిరపకాయ]}
+      - {value: cotton, te: పత్తి, en: Cotton, aliases: [cotton, పత్తి]}
+      - {value: groundnut, te: వేరుశనగ, en: Groundnut, aliases: [groundnut, peanut, వేరుశనగ, వేరుశెనగ, పల్లీలు]}
+      - {value: other, te: ఇతర, en: Other, aliases: [other, ఇతర, వేరే]}
+  - key: has_bank
+    type: yes_no
+    risk: low
+    label_te: బ్యాంక్ ఖాతా
+    label_en: Bank account
+    prompt_te: మీకు బ్యాంక్ ఖాతా ఉందా?
+    prompt_en: Do you have a bank account?

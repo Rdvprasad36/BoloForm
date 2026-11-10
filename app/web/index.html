@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="te">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bolo Form: speak to fill a form</title>
+  <link rel="icon" href="/logo.svg">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="top">
+  <img src="/logo.svg" alt="Bolo Form" class="logo">
+  <nav><a href="/limits">Limits</a><a href="/eval">Eval</a></nav>
+</header>
+
+<main>
+  <!-- S1 Welcome -->
+  <section id="s-welcome" class="screen">
+    <h1 class="te">మాట్లాడండి, ఫారం నిండుతుంది</h1>
+    <p class="en">Speak in Telugu. I will fill the form.</p>
+    <label class="field">
+      <span>Form / ఫారం</span>
+      <select id="form-select"></select>
+    </label>
+    <label class="check">
+      <input type="checkbox" id="telephony">
+      <span>Phone-line mode (simulates a phone call) / ఫోన్ లైన్ మోడ్</span>
+    </label>
+    <button id="start" class="primary big">ప్రారంభించు / Start</button>
+    <p class="notice">Demo only. Do not enter real personal data. Audio is not saved.</p>
+    <p id="welcome-error" class="error" role="alert" hidden></p>
+  </section>
+
+  <!-- S2 Question -->
+  <section id="s-question" class="screen" hidden>
+    <div class="progress" aria-label="progress">
+      <span id="progress-text">1 / 8</span>
+      <div class="bar"><div id="progress-fill"></div></div>
+    </div>
+
+    <div class="card question">
+      <p id="q-te" class="te q"></p>
+      <p id="q-en" class="en"></p>
+      <button id="replay" class="link" type="button">▶ మళ్ళీ వినండి / Replay</button>
+    </div>
+
+    <div id="message" class="message" role="status" hidden>
+      <p id="msg-te" class="te"></p><p id="msg-en" class="en"></p>
+    </div>
+
+    <div id="confirm-card" class="card confirm" hidden>
+      <p class="en small">I heard:</p>
+      <p id="confirm-value" class="confirm-value"></p>
+      <p id="confirm-en" class="en"></p>
+      <div class="yn">
+        <button id="yes" class="primary big" type="button">అవును / Yes</button>
+        <button id="no" class="secondary big" type="button">కాదు / No</button>
+      </div>
+    </div>
+
+    <div class="mic-wrap">
+      <button id="mic" class="mic" data-state="idle" aria-pressed="false" aria-label="Tap to speak">
+        <svg viewBox="0 0 24 24" width="44" height="44" aria-hidden="true"><path fill="currentColor" d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V22h2v-3.08A7 7 0 0 0 19 12h-2Z"/></svg>
+      </button>
+      <p id="mic-label" class="mic-label te">నొక్కి చెప్పండి</p>
+      <div class="meter" aria-hidden="true"><div id="meter-fill"></div></div>
+    </div>
+
+    <p class="heard" aria-live="polite"><span class="en small">You said / మీరు చెప్పింది:</span> <span id="heard"></span></p>
+
+    <div class="row">
+      <button id="back" class="link" type="button">← వెనక్కి / Back</button>
+      <button id="skip" class="link" type="button">దాటవేయి / Skip</button>
+      <button id="type-toggle" class="link" type="button">⌨ Type instead</button>
+    </div>
+
+    <div id="typed" class="card" hidden>
+      <label class="field"><span>Type your answer / టైప్ చేయండి</span>
+        <input id="typed-input" type="text" autocomplete="off"></label>
+      <button id="typed-send" class="primary" type="button">Send / పంపండి</button>
+    </div>
+
+    <div id="mockbox" class="card mock" hidden>
+      <label class="field"><span>MOCK provider: type what the person says (developer mode)</span>
+        <input id="mock-input" type="text" autocomplete="off"></label>
+      <button id="mock-send" class="secondary" type="button">Simulate speech</button>
+    </div>
+
+    <details class="card sofar" open>
+      <summary>Form so far / ఇప్పటి వరకు</summary>
+      <ul id="sofar" class="list"></ul>
+    </details>
+  </section>
+
+  <!-- S4 Review -->
+  <section id="s-review" class="screen" hidden>
+    <h2 class="te">దయచేసి ఒకసారి చూసి సరిచూడండి</h2>
+    <p class="en">Please check your form. Fields that need a check are shown first.</p>
+    <ul id="review-list" class="list review"></ul>
+    <p id="review-error" class="error" role="alert" hidden></p>
+    <div class="row">
+      <button id="read-all" class="secondary" type="button">🔊 Read all aloud</button>
+      <button id="finish" class="primary big" type="button">Finish / పూర్తి</button>
+    </div>
+  </section>
+
+  <!-- S5 Done -->
+  <section id="s-done" class="screen" hidden>
+    <h2 class="te">మీ ఫారం సిద్ధంగా ఉంది</h2>
+    <p class="en">Your demo form is ready.</p>
+    <ul id="done-list" class="list"></ul>
+    <div class="card privacy">
+      <strong>Privacy receipt</strong>
+      <p>No audio was saved. Your answers exist only in this session and are deleted when you press the button below or after 10 idle minutes.</p>
+    </div>
+    <button id="delete" class="primary big" type="button">Delete my answers and restart</button>
+  </section>
+</main>
+
+<div id="live" class="sr-only" aria-live="polite"></div>
+<script type="module" src="/app.js"></script>
+</body>
+</html>

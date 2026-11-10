@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bolo Form: limits</title>
+  <link rel="icon" href="/logo.svg"><link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="top"><a href="/"><img src="/logo.svg" alt="Bolo Form" class="logo"></a>
+  <nav><a href="/">App</a><a href="/eval">Eval</a></nav></header>
+<main>
+  <h1>Limits</h1>
+  <p class="en">What Bolo Form does not do, and what we have not proven. Update this page with real failures after each eval run.</p>
+  <div class="card"><h2>Known limits of this build</h2><ul>
+    <li><strong>Demo only.</strong> The forms are made-up examples. Nothing is submitted anywhere. Use fake data.</li>
+    <li><strong>Telugu wording is a draft.</strong> Prompts, number words and command words have not been reviewed by a native speaker.</li>
+    <li><strong>District list needs verification</strong> against an official source; district names have changed over time.</li>
+    <li><strong>Number parsing is partial.</strong> It covers common spoken forms up to thousands, "X and a half", and "double/triple" digits. Unusual or regional number phrasing can fail; the read-back step exists to catch this.</li>
+    <li><strong>Noise estimate is crude.</strong> It compares loud and quiet frames; it is not a calibrated SNR measurement.</li>
+    <li><strong>Phone-line mode is a simulation</strong> (band-limit, 8 kHz, mu-law), not a real telephone network.</li>
+    <li><strong>Names and village names</strong> are free text and are the hardest fields to recognise; they are confirmed by read-back but the spelling may still need correction on the review screen.</li>
+    <li><strong>No live telephony or IVR</strong> integration.</li>
+  </ul></div>
+  <div class="card"><h2>Limits of the evaluation</h2><ul>
+    <li>Test speech comes from text-to-speech, which is cleaner and more uniform than real people speaking.</li>
+    <li>One synthetic voice cannot represent Telugu dialects (Uttarandhra, Rayalaseema, Coastal, Telangana).</li>
+    <li>The simulated user always notices a wrong read-back and always understands yes/no, which real users will not.</li>
+    <li>Results on the mock provider are simulated and must not be quoted.</li>
+    <li>Small samples give wide confidence intervals.</li>
+  </ul></div>
+  <div class="card"><h2>Privacy</h2><ul>
+    <li>No audio is stored. Answers live in memory for the session and are deleted when you finish, press Delete, or after 10 idle minutes.</li>
+    <li>Transcripts are not logged unless the operator enables debug mode.</li>
+  </ul></div>
+</main>
+</body>
+</html>

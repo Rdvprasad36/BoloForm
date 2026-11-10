@@ -1,0 +1,14 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.cache/
+eval/results/*.json
+eval/results/*.md
+# Root-level draft files (real code is in app/)
+/dialogue.py
+/gnani.py
+/main.py
+/run_eval.py
+/logo.svg

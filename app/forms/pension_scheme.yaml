@@ -1,0 +1,42 @@
+# DEMO FORM (second config to show forms are data, not code). Fake data only.
+id: pension_scheme
+title_te: వృద్ధాప్య పింఛన్ దరఖాస్తు (డెమో)
+title_en: Demo Old-Age Pension Application
+fields:
+  - key: name
+    type: text
+    risk: medium
+    label_te: పేరు
+    label_en: Name
+    prompt_te: మీ పేరు ఏమిటి?
+    prompt_en: What is your name?
+  - key: age
+    type: integer
+    risk: critical
+    min: 40
+    max: 110
+    label_te: వయస్సు
+    label_en: Age
+    prompt_te: మీ వయస్సు ఎంత?
+    prompt_en: How old are you?
+  - key: village
+    type: text
+    risk: medium
+    label_te: ఊరు
+    label_en: Village
+    prompt_te: మీ ఊరు పేరు ఏమిటి?
+    prompt_en: What is your village?
+  - key: phone
+    type: phone
+    risk: critical
+    label_te: ఫోన్ నంబర్
+    label_en: Phone number
+    prompt_te: మీ ఫోన్ నంబర్ చెప్పండి.
+    prompt_en: Tell me your phone number.
+  - key: lives_alone
+    type: yes_no
+    risk: low
+    label_te: ఒంటరిగా నివసిస్తున్నారా
+    label_en: Lives alone
+    prompt_te: మీరు ఒంటరిగా ఉంటున్నారా?
+    prompt_en: Do you live alone?
