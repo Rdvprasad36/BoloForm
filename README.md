@@ -1,10 +1,41 @@
+
 # Bolo Form
 
 Speak in Telugu, get a filled form. Built for the Gnani AI *Great Indian AI Internship Challenge*.
 
 Bolo Form asks each question aloud (Gnani **Timbre**), listens (Gnani **Prisma**), parses and validates the answer, reads risky answers back, and only commits what the person confirms. It can be embedded into any external web page via `<script src="/embed.js">` to interview users in Telugu and fill host forms in English live via `postMessage`.
 
-> Demo only. The forms use synthetic data. No audio is stored.
+Bolo Form lets a person fill a long form by talking in Telugu. It asks each question aloud, listens, checks the answer, reads it back, and only commits what the person confirms. It also includes a built-in evaluation harness that measures how often voice form-filling goes wrong, and where.
+
+## Problem
+
+Many people in India cannot comfortably fill online forms: older people, first-time applicants, farmers, and those with low typing or reading skills. Forms are often long, in English or formal language, and a single mistake can result in a rejected application.
+
+Voice seems like the obvious solution, but two issues reduce trustworthiness:
+
+- Speech recognition errors on numbers and names (phone digits, land area, age) are silent, so incorrect values may go unnoticed.
+- No systematic measurement exists. Most voice demos show only one clean success and do not report failure rates, especially for Telugu, dialects, or noisy phone-quality audio.
+
+## Users
+
+**Primary persona (fictional):** Lakshmamma, 62, farmer, Anakapalli district. Speaks Telugu, reads slowly, has a basic phone, is nervous about forms, and usually depends on a relative or middleman.
+
+**Secondary personas:**
+
+- A first-time applicant who finds formal Telugu or English confusing.  
+- A helper (volunteer, CSC operator, family member) who fills forms for others and wants a faster, verified workflow.
+
+**Evaluator persona:** A Gnani engineer or hiring manager who wants to see Gnani models used effectively, with honest measurement and clean engineering.
+
+## Goals and Non-goals
+
+**Goals**
+
+- G1. Provide a complete voice-only path from the first question to a reviewed form, in Telugu.  
+- G2. Ensure no silent errors: every committed value is either confirmed or clearly flagged.  
+- G3. Show measured results (accuracy, errors caught, turns, latency) on clean, noisy, and telephone-quality audio.  
+- G4. Be reusable: a new form is a config file, not new code.  
+- G5. Respect privacy: no audio is stored, no real personal data is retained.
 
 ---
 
